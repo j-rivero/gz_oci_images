@@ -13,7 +13,7 @@ on:
         - rolling
       image_registry:
         description: The container registry to pull from
-        default: "ghcr.io/sloretz"
+        default: "ghcr.io/j-rivero"
         type: string
       image_name:
         description: The name of the image
@@ -27,7 +27,7 @@ on:
         required: true
       image_registry:
         description: The container registry to pull from
-        default: "ghcr.io/sloretz"
+        default: "ghcr.io/j-rivero"
         type: string
       image_name:
         description: The name of the image
@@ -65,11 +65,9 @@ jobs:
           ./scripts/test_images.py \
             --registry "${{ inputs.image_registry }}" \
             --name "${{ inputs.image_name }}" \
-            --rosdistro "${{ inputs.ros_distro }}" \
             --dry-run
       - name: Test Deployed Images
         run: |
           ./scripts/test_images.py \
             --registry "${{ inputs.image_registry }}" \
-            --name "${{ inputs.image_name }}" \
-            --rosdistro "${{ inputs.ros_distro }}"
+            --name "${{ inputs.image_name }}"
