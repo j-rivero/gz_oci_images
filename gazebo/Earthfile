@@ -93,7 +93,7 @@ gazebo-core:
     # Install core Gazebo packages (gz-tools)
     RUN apt-get update && \
         if [ "$GAZEBO_RELEASE" = "fortress" ]; then \
-          apt-get install -y ign-tools1; \
+          apt-get install -y libignition-tools-dev; \
         else \
           apt-get install -y gz-tools2; \
         fi
