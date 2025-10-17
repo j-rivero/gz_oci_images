@@ -1,0 +1,16 @@
+name: Gazebo Ionic Build If Necessary
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 */6 * * *'  # Every 6 hours.
+
+permissions:
+      packages: write
+      contents: read
+
+jobs:
+  build-and-deploy-ionic:
+    uses: ./.github/workflows/build-one-gazebo-release-if-necessary.yaml
+    with:
+      gazebo_release: ionic

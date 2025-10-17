@@ -1,75 +1,51 @@
 VERSION 0.8
 
-IMPORT ./ros2 AS ros2
-IMPORT ./ros-dev AS ros-dev
+IMPORT ./gazebo AS gazebo
 
 
-rolling:
+jetty:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args ros2+rolling
+    ARG image_name='gazebo'
+    BUILD --pass-args gazebo+jetty
 
 
-kilted:
+ionic:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args ros2+kilted
+    ARG image_name='gazebo'
+    BUILD --pass-args gazebo+ionic
 
-jazzy:
+
+harmonic:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args ros2+jazzy
+    ARG image_name='gazebo'
+    BUILD --pass-args gazebo+harmonic
 
 
-humble:
+fortress:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args ros2+humble
+    ARG image_name='gazebo'
+    BUILD --pass-args gazebo+fortress
 
 
-ros-dev-ubuntu-noble:
+jetty-multiarch:
     ARG registry='localhost/'
-    ARG image_name='ros-dev'
-    BUILD --pass-args ros-dev+ubuntu-noble
+    ARG image_name='gazebo'
+    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +jetty
 
 
-ros-dev-ubuntu-jammy:
+ionic-multiarch:
     ARG registry='localhost/'
-    ARG image_name='ros-dev'
-    BUILD --pass-args ros-dev+ubuntu-jammy
+    ARG image_name='gazebo'
+    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +ionic
 
 
-rolling-multiarch:
+harmonic-multiarch:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +rolling
+    ARG image_name='gazebo'
+    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +harmonic
 
 
-kilted-multiarch:
+fortress-multiarch:
     ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +kilted
-
-
-jazzy-multiarch:
-    ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +jazzy
-
-
-humble-multiarch:
-    ARG registry='localhost/'
-    ARG image_name='ros'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +humble
-
-
-ros-dev-ubuntu-noble-multiarch:
-    ARG registry='localhost/'
-    ARG image_name='ros-dev'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm/v7 --platform=linux/arm64/v8 +ros-dev-ubuntu-noble
-
-
-ros-dev-ubuntu-jammy-multiarch:
-    ARG registry='localhost/'
-    ARG image_name='ros-dev'
-    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm/v7 --platform=linux/arm64/v8 +ros-dev-ubuntu-jammy
+    ARG image_name='gazebo'
+    BUILD --pass-args --platform=linux/amd64 --platform=linux/arm64/v8 +fortress

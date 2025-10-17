@@ -1,4 +1,4 @@
-name: Build Dev Ubuntu Noble
+name: Gazebo Fortress Build
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
       contents: read
 
 jobs:
-  build-dev-ubuntu-noble:
-    uses: ./.github/workflows/build-dev.yaml
+  build-and-deploy-harmonic:
+    uses: ./.github/workflows/build-one-gazebo-release.yaml
     with:
-      earthly_target: +ros-dev-ubuntu-noble
+      gazebo_release: fortress

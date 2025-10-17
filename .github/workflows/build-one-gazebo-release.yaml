@@ -1,35 +1,33 @@
-name: Build Dev Container Images
+name: Build One Gazebo Release
 
 on:
   workflow_dispatch:
     inputs:
+      gazebo_release:
+        type: string
+        description: Gazebo Release to build
+        default: "harmonic"
       image_registry:
         description: The container registry to push to (must be ghcr.io)
         default: "ghcr.io/sloretz"
         type: string
       image_name:
         description: The name of the image
-        default: "ros-dev"
+        default: "gazebo"
         type: string
-      earthly_target:
-        type: choice
-        options:
-          - "+ros-dev-ubuntu-noble-multiarch"
-          - "+ros-dev-ubuntu-jammy-multiarch"
-        description: The earthly target to build including a '+' sign at the start.
   workflow_call:
     inputs:
+      gazebo_release:
+        description: Gazebo Release to build
+        type: string
+        required: true
       image_registry:
         description: The container registry to push to (must be ghcr.io)
         default: "ghcr.io/sloretz"
         type: string
       image_name:
         description: The name of the image
-        default: "ros-dev"
-        type: string
-      earthly_target:
-        description: The earthly target to build including a '+' sign at the start.
-        required: true
+        default: "gazebo"
         type: string
 
 permissions:
@@ -42,14 +40,23 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-22.04
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be  # v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a  # v3.3.0
       - uses: earthly/actions-setup@43211c7a0eae5344d6d79fb4aaf209c8f8866203  # v1.0.13
         with:
-          version: v0.8.0
+          version: v0.8.15
       - name: Checkout Repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-
-      - name: Install dependencies
-        run: ./scripts/install_dependencies.bash
 
       - name: Log in to ghcr.io
         uses: Wandalen/wretry.action@62451a214c01d1b0136b4f87289d840b30d67b98  # v1.4.4
@@ -63,8 +70,12 @@ jobs:
             registry: ${{ inputs.image_registry }}
 
       - name: Build and Push Images
-        run: |
-          earthly --ci --push \
-            ${{ inputs.earthly_target }} \
-            --registry=${{ inputs.image_registry }}/ \
-            --image_name=${{ inputs.image_name }}
+        run: earthly --ci --push +${{ inputs.gazebo_release }}-multiarch --registry=${{ inputs.image_registry }}/ --image_name=${{ inputs.image_name }}
+
+  call-test-deployed-images:
+    needs: build-and-deploy
+    uses: ./.github/workflows/test-deployed-images-one-gazebo-release.yaml
+    with:
+      gazebo_release: ${{ inputs.gazebo_release }}
+      image_registry: ${{ inputs.image_registry }}
+      image_name: ${{ inputs.image_name }}

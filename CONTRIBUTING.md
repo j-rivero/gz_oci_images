@@ -17,7 +17,7 @@ Yes, like this.
 Thank you!
 ```
 
-If you would like to add a tutorial, please consider contributing it to [the official ROS 2 Documentation](https://github.com/ros2/ros2_documentation).
+If you would like to add a tutorial, please consider contributing it to [the official Gazebo Documentation](https://gazebosim.org/docs).
 If it's not accepted there, then please create an issue on this repository and we can work together to figure out where to put it.
 
 ## How to make a source code contribution
@@ -38,22 +38,21 @@ Install this to lint source code:
 ### Repository Structure
 
 This repo uses [Earthly](https://docs.earthly.dev/) to build and push OCI images from [Earthfiles](https://docs.earthly.dev/docs/earthfile).
-The Earthfiles create OCI Images for each active [ROS distro](http://docs.ros.org/en/rolling/Releases.html).
+The Earthfiles create OCI Images for each active [Gazebo release](https://gazebosim.org/docs/latest/releases/).
 The Earthfiles push the images to [Github Packages](https://github.com/features/packages).
 
 There is a top-level Earthfile which imports from Earthfiles in subfolders.
-The top-level Earthfile defines what platforms each ROS distro's images are built for.
+The top-level Earthfile defines what platforms each Gazebo release's images are built for.
 
-#### The ros1 and ros2 folders
+#### The gazebo folder
 
-The `ros2` folder has an Earthfile used to create images with ROS 2 installed from debian packages.
-The ROS 2 definitions  were taken from [here](https://github.com/osrf/docker_images/tree/3d7df313d1b9be171f5aa87b5daa097354f753ea/ros/rolling/ubuntu/jammy).
-The Earthfiles don't need to match the Dockerfiles in [osrf/docker_images](https://github.com/osrf/docker_images), but they should stay close.
+The `gazebo` folder has an Earthfile used to create images with Gazebo installed from debian packages.
+The Gazebo definitions follow the installation instructions from [packages.osrfoundation.org](https://packages.osrfoundation.org/).
 
-*  `ros2/Earthfile` defines a target for each active ROS 2 distro.
-    Each target creates an OCI image for each [variant defined by REP 2001](https://ros.org/reps/rep-2001.html).
+* `gazebo/Earthfile` defines a target for each active Gazebo release.
+  Each target creates OCI images with different levels of Gazebo installation: core, base, and full.
 
-If you think there should be a new folder in `ros2` (ex: a navigation image with Nav2, or a moveit2 image) then please [propose a new variant to REP 2001 first](https://github.com/ros-infrastructure/rep/blob/master/rep-2001.rst) as a pull request to the [ros-infrastructure/rep repo](https://github.com/ros-infrastructure/rep).
+If you think there should be a new image variant in `gazebo` (ex: a development image with additional tools), please create an issue on this repository to discuss it.
 
 #### The apt folder
 
@@ -63,21 +62,19 @@ If you think there should be a new folder in `ros2` (ex: a navigation image with
 
 The `scripts` folder holds miscellaneous scripts used by the github actions in this repository.
 
-* `test_images.py` invokes docker to run commands in all images for one ROS distro.
-    Inside it is another hardcoded copy of the knowledge of what architectures are supported by each ROS distro.
+* `test_images.py` invokes docker to run commands in all images for one Gazebo release.
+    Inside it is another hardcoded copy of the knowledge of what architectures are supported by each Gazebo release.
     Run `./scripts/test_images.py --help` to see what options it takes.
 * `install_dependencies.bash` installs `qemu-user-static` on an Ubuntu 22.04 machine.
 * `is_new_version_available.py` checks if there's a new verion of a debian package.
-    This is used to determine when new images need to be built after a ROS distro's packages get sync'd to the main apt repo.
+    This is used to determine when new images need to be built after a Gazebo release's packages get sync'd to the main apt repo.
 
 #### The .github/workflows folder
 
 This folder contains github workflows that build and test the images.
 
-* `test-deployed-images-one-ros-distro.yaml` pulls all images for a given ROS distro and makes sure the `ros2` command can be used.
-* `build-and-deploy-one-ros-distro.yaml` builds all images for a given ROS distro, pushes them to github actions, and then calls `test-deployed-images-one-ros-distro.yaml` to make sure they work.
-* `build-and-deploy-one-ros-distro-if-necessary.yaml` checks if a new version of the `ros-$distro-desktop-full` package is available, and if so calls `build-and-deploy-one-ros-distro.yaml` to update it.
-* `build-and-deploy-all-yaml` runs once per week and rebuilds all of the ROS images.
-* `build-and-deploy-all-if-necessary.yaml` runs every 6 hours and calls `build-and-deploy-one-ros-distro-if-necessary.yaml` for every supported ROS distro.
-* `python-lint.yaml` runs the [black Python linter](https://github.com/psf/black).
-* `ci-build-amd64-image-one-ros-distro.yaml` builds the amd64 architecture images for one ROS distro, and the workflow `ci-build-amd64-images.yaml` calls it for every supported ROS distro.
+* `test-deployed-images-one-gazebo-release.yaml` pulls all images for a given Gazebo release and makes sure the `gz sim` command can be used.
+* `build-one-ros-distro.yaml` builds all images for a given Gazebo release, pushes them to github actions, and then calls `test-deployed-images-one-gazebo-release.yaml` to make sure they work.
+* `build-one-ros-distro-if-necessary.yaml` checks if a new version of the `gz-$release` package is available, and if so calls `build-one-ros-distro.yaml` to update it.
+* Various release-specific build workflows run once per week and rebuild all of the Gazebo images.
+* `ci-python-lint.yaml` runs the [black Python linter](https://github.com/psf/black).
