@@ -1,4 +1,4 @@
-name: ROS Jazzy Build
+name: Gazebo Harmonic Build
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy-jazzy:
-    uses: ./.github/workflows/build-one-ros-distro.yaml
+  build-and-deploy-harmonic:
+    uses: ./.github/workflows/build-one-gazebo-release.yaml
     with:
-      ros_distro: jazzy
+      gazebo_release: harmonic

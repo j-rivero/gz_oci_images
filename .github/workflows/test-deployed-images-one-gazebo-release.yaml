@@ -1,0 +1,80 @@
+name: Test Deployed Images for one release
+
+on:
+  workflow_dispatch:
+    inputs:
+      gazebo_release:
+        type: choice
+        description: Gazebo Release to test
+        options:
+        - fortress
+        - harmonic
+        - ionic
+        - jetty
+      image_registry:
+        description: The container registry to pull from
+        default: "ghcr.io/j-rivero"
+        type: string
+      image_name:
+        description: The name of the image
+        default: "gazebo"
+        type: string
+  workflow_call:
+    inputs:
+      gazebo_release:
+        type: string
+        description: Gazebo Release to test
+        required: true
+      image_registry:
+        description: The container registry to pull from
+        default: "ghcr.io/j-rivero"
+        type: string
+      image_name:
+        description: The name of the image
+        default: "gazebo"
+        type: string
+
+permissions:
+  packages: read
+  contents: read
+
+jobs:
+
+  test-deployed-images:
+    name: Test Deployed Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be  # v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - name: Checkout Repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+
+      - name: Login to Container Registry
+        if: ${{ inputs.image_registry != 'localhost' }}
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567  # v3.3.0
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: ${{ inputs.image_registry }}
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c  # v5.0.0
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements.txt
+
+      - name: Test all images
+        run: |
+          python3 scripts/test_images.py --registry ${{ inputs.image_registry }} --image-name ${{ inputs.image_name }} --release ${{ inputs.gazebo_release }}

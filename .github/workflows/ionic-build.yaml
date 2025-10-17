@@ -1,0 +1,17 @@
+name: Gazebo Ionic Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * SUN'  # 00:00 on Sunday.
+
+permissions:
+      packages: write
+      contents: read
+
+jobs:
+  build-and-deploy-ionic:
+    uses: ./.github/workflows/build-one-gazebo-release.yaml
+    with:
+      gazebo_release: ionic
+      image_name: gazebo

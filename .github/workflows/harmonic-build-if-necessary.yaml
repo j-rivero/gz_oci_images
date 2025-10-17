@@ -1,0 +1,16 @@
+name: Gazebo Harmonic Build If Necessary
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 */6 * * *'  # Every 6 hours.
+
+permissions:
+      packages: write
+      contents: read
+
+jobs:
+  build-and-deploy-harmonic:
+    uses: ./.github/workflows/build-one-gazebo-release-if-necessary.yaml
+    with:
+      gazebo_release: harmonic

@@ -1,6 +1,6 @@
-# ROS Open Container Initiative Images
+# Gazebo Open Container Initiative Images
 
-[Open Container Initiative](https://opencontainers.org/) images for [ROS](https://ros.org)!
+[Open Container Initiative](https://opencontainers.org/) images for [Gazebo](https://gazebosim.org)!
 
 
 Are you looking for **Docker images**?
@@ -8,53 +8,40 @@ You're in the right spot!
 OCI images are Docker images.
 [Here's how Docker and OCI relate](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/).
 
+> [!NOTE]  
+> This repository is mostly a fork of the work done by @slorezt in https://github.com/sloretz/ros_oci_images
+> adapted to Gazebo. All credit goes to Shane.
 
 ## Quick Start
 
 New to containers? Start with [Docker](https://docs.docker.com/get-docker/). It has the most documentation and tutorials.
 
 ```
-docker run --rm=true -ti ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+docker run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty gz sim --help
 ```
 
 ## About the images
 
 All images are updated once per week at midnight GMT on Sunday.
-Additionally each ROS distro's images are updated automatically after a sync.
+Additionally each Gazebo release's images are updated automatically after a sync.
 
-The ROS 2 distros have an image for each [variant defined by REP 2001](https://ros.org/reps/rep-2001.html).
+The Gazebo releases provide different variants based on the included libraries.
 All images are based on Ubuntu.
 
-| Image           | amd64 | arm64 v8 | Full Image Name                            |
-|-----------------|-------|----------|--------------------------------------------|
-| [ROS Humble](http://docs.ros.org/en/humble)                                        |
-| ros-core        | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-ros-core`      |
-| ros-base        | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-ros-base`      |
-| desktop         | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-desktop`       |
-| perception      | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-perception`    |
-| simulation      | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-simulation`    |
-| desktop-full    | ✅     | ✅        | `ghcr.io/sloretz/ros:humble-desktop-full`  |
-| [ROS Jazzy](http://docs.ros.org/en/jazzy)                                            |
-| ros-core        | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-ros-core`        |
-| ros-base        | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-ros-base`        |
-| desktop         | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-desktop`         |
-| perception      | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-perception`      |
-| simulation      | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-simulation`      |
-| desktop-full    | ✅     | ✅        | `ghcr.io/sloretz/ros:jazzy-desktop-full`    |
-| [ROS Kilted](http://docs.ros.org/en/kilted)                                      |
-| ros-core        | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-ros-core`      |
-| ros-base        | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-ros-base`      |
-| desktop         | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-desktop`       |
-| perception      | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-perception`    |
-| simulation      | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-simulation`    |
-| desktop-full    | ✅     | ✅        | `ghcr.io/sloretz/ros:kilted-desktop-full`  |
-| [ROS Rolling](http://docs.ros.org/en/rolling)                                      |
-| ros-core        | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-ros-core`     |
-| ros-base        | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-ros-base`     |
-| desktop         | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-desktop`      |
-| perception      | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-perception`   |
-| simulation      | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-simulation`   |
-| desktop-full    | ✅     | ✅        | `ghcr.io/sloretz/ros:rolling-desktop-full` |
+| Image           | amd64 | arm64 v8 | Full Image Name                                |
+|-----------------|-------|----------|-----------------------------------------------|
+| **[Gazebo Jetty (LTS)](https://gazebosim.org/docs/jetty)** | | | |
+| core            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:jetty-core`           |
+| full            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:jetty-full`           |
+| **[Gazebo Ionic](https://gazebosim.org/docs/ionic)** | | | |
+| core            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:ionic-core`           |
+| full            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:ionic-full`           |
+| **[Gazebo Harmonic (LTS)](https://gazebosim.org/docs/harmonic)** | | | |
+| core            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:harmonic-core`        |
+| full            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:harmonic-full`        |
+| **[Gazebo Fortress (LTS)](https://gazebosim.org/docs/fortress)** | | | |
+| core            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:fortress-core`        |
+| full            | ✅     | ✅        | `ghcr.io/j-rivero/gazebo:fortress-full`        |
 
 ## Using with other OCI compatible tools
 
@@ -63,76 +50,72 @@ Other tools might be better fit your use case.
 
 [Apptainer](https://apptainer.org/)
 
-```
-apptainer run docker://ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+```bash
+apptainer run docker://ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 [Distrobox](https://github.com/89luca89/distrobox) (Requires Docker or Podman to be installed)
 
-```
-distrobox create --image ghcr.io/sloretz/ros:rolling-desktop --name rolling-desktop
-distrobox enter rolling-desktop
-. /opt/ros/rolling/setup.bash
-ros2 --help
+```bash
+distrobox create --image ghcr.io/j-rivero/gazebo:jetty-full --name jetty-full
+distrobox enter jetty-full
+gz sim --help
 ```
 
 [nerdctl](https://github.com/containerd/nerdctl) using [rootless mode](https://github.com/containerd/nerdctl?tab=readme-ov-file#rootless-mode).
 
-```
-nerdctl run --rm=true -ti ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+```bash
+nerdctl run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 [Podman](https://podman.io/)
 
-```
-podman run --rm=true -ti ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+```bash
+podman run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 [Rocker](https://github.com/osrf/rocker) (requires Docker to be installed)
 
-```
-rocker ghcr.io/sloretz/ros:rolling-desktop ros2 -- --help
+```bash
+rocker ghcr.io/j-rivero/gazebo:jetty-full gz sim -- --help
 ```
 
 [Sarus](https://sarus.readthedocs.io/en/stable/#)
 
-```
-sarus pull ghcr.io/sloretz/ros:rolling-desktop
-sarus run -t ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+```bash
+sarus pull ghcr.io/j-rivero/gazebo:jetty-full
+sarus run -t ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 [SingularityCE](https://sylabs.io/singularity/)
 
-```
-singularity run docker://ghcr.io/sloretz/ros:rolling-desktop ros2 --help
+```bash
+singularity run docker://ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 [Toolbox](https://containertoolbx.org/) (Requires Podman to be installed)
 
-```
-toolbox create --image ghcr.io/sloretz/ros:rolling-desktop rolling-desktop
-toolbox enter rolling-desktop
-. /opt/ros/rolling/setup.bash
-ros2 --help
+```bash
+toolbox create --image ghcr.io/j-rivero/gazebo:jetty-full jetty-full
+toolbox enter jetty-full
+gz sim --help
 ```
 
 [x11docker](https://github.com/mviereck/x11docker) (Requires Podman, Docker, or nerdctl to be installed)
 
 ```bash
 # Option 1: using podman
-podman pull ghcr.io/sloretz/ros:rolling-desktop
+podman pull ghcr.io/j-rivero/gazebo:jetty-full
 # Option 2: using docker
-docker pull ghcr.io/sloretz/ros:rolling-desktop
+docker pull ghcr.io/j-rivero/gazebo:jetty-full
 # Option 3: using nerdctl
-nerdctl pull ghcr.io/sloretz/ros:rolling-desktop
+nerdctl pull ghcr.io/j-rivero/gazebo:jetty-full
 
 # After pulling, run this to use RViz with gpu acceleration
-x11docker --gpu ghcr.io/sloretz/ros:rolling-desktop rviz2
+x11docker --gpu ghcr.io/j-rivero/gazebo:jetty-full gz sim
 ```
 
 ## Comparison to osrf/docker_images
 
 This repo is a spiritual fork of [the official OSRF docker images](https://github.com/osrf/docker_images).
 The image definitions here were copied and modified from them.
-The goal of this repo is to make updated images available sooner.
-This has been [a longstanding issue with the official OSRF Docker images](https://github.com/osrf/docker_images/issues/112) that can't easily be solved due to both [Docker Official Library](https://github.com/docker-library/official-images) policies and how the ROS buildfarm versions packages on different architectures.

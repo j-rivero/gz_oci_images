@@ -1,4 +1,4 @@
-name: ROS Kilted Build
+name: Gazebo Fortress Build
 
 on:
   workflow_dispatch:
@@ -10,8 +10,7 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy-kilted:
-    uses: ./.github/workflows/build-one-ros-distro.yaml
+  build-and-deploy-harmonic:
+    uses: ./.github/workflows/build-one-gazebo-release.yaml
     with:
-      ros_distro: kilted
-      image_name: ros
+      gazebo_release: fortress

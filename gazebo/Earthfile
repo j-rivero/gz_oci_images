@@ -1,0 +1,113 @@
+VERSION 0.8
+
+IMPORT ../apt AS apt
+IMPORT ../lib AS lib
+
+jetty:
+    ARG image_name='gazebo'
+    ARG registry='localhost/'
+    DO +GAZEBO_BINARY_IMAGES \
+        --registry=$registry \
+        --image_name=$image_name \
+        --GAZEBO_RELEASE='jetty' \
+        --UBUNTU_IMAGE='ubuntu:noble'
+
+
+ionic:
+    ARG image_name='gazebo'
+    ARG registry='localhost/'
+    DO +GAZEBO_BINARY_IMAGES \
+        --registry=$registry \
+        --image_name=$image_name \
+        --GAZEBO_RELEASE='ionic' \
+        --UBUNTU_IMAGE='ubuntu:noble'
+
+
+harmonic:
+    ARG image_name='gazebo'
+    ARG registry='localhost/'
+    DO +GAZEBO_BINARY_IMAGES \
+        --registry=$registry \
+        --image_name=$image_name \
+        --GAZEBO_RELEASE='harmonic' \
+        --UBUNTU_IMAGE='ubuntu:jammy'
+
+
+fortress:
+    ARG image_name='gazebo'
+    ARG registry='localhost/'
+    DO +GAZEBO_BINARY_IMAGES \
+        --registry=$registry \
+        --image_name=$image_name \
+        --GAZEBO_RELEASE='fortress' \
+        --UBUNTU_IMAGE='ubuntu:jammy'
+
+
+GAZEBO_BINARY_IMAGES:
+    FUNCTION
+    ARG --required image_name
+    ARG --required registry
+    ARG --required GAZEBO_RELEASE
+    ARG --required UBUNTU_IMAGE
+    ARG use_testing_repo=false
+
+    # gazebo-core
+    FROM --pass-args +gazebo-core
+    DO lib+SAVE_IMAGE_AND_DATE --fully_qualified_name=${registry}${image_name}:${GAZEBO_RELEASE}-core
+
+    # gazebo-full
+    FROM --pass-args +gazebo-full
+    DO lib+SAVE_IMAGE_AND_DATE --fully_qualified_name=${registry}${image_name}:${GAZEBO_RELEASE}-full
+
+
+gazebo-core:
+    ARG UBUNTU_IMAGE
+    ARG GAZEBO_RELEASE
+    ARG use_testing_repo
+
+    FROM $UBUNTU_IMAGE
+
+    # Setup timezone
+    RUN echo 'Etc/UTC' > /etc/timezone && \
+        ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
+
+    # Install packages
+    DO apt+INSTALL --packages="
+        ca-certificates
+        curl
+        gnupg
+        lsb-release"
+
+    # Setup keys and apt sources for Gazebo
+    RUN set -eux; \
+        curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg; \
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null; \
+        apt-get update
+
+    # Setup environment
+    ENV LANG C.UTF-8
+    ENV LC_ALL C.UTF-8
+
+    ENV GAZEBO_RELEASE ${GAZEBO_RELEASE}
+
+    # Install core Gazebo packages (gz-tools)
+    RUN apt-get update && \
+        if [ "$GAZEBO_RELEASE" = "fortress" ]; then \
+          apt-get install -y libignition-tools-dev; \
+        else \
+          apt-get install -y gz-tools2; \
+        fi
+
+    CMD ["bash"]
+
+    SAVE IMAGE localhost/gazebo-intermediate:${GAZEBO_RELEASE}-core
+
+
+gazebo-full:
+    ARG GAZEBO_RELEASE
+    FROM --pass-args +gazebo-core
+
+    # Install complete Gazebo suite
+    DO apt+INSTALL --packages=gz-${GAZEBO_RELEASE}
+
+    SAVE IMAGE localhost/gazebo-intermediate:${GAZEBO_RELEASE}-full

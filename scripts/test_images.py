@@ -18,7 +18,7 @@ import argparse
 import subprocess
 
 
-# TODO(sloretz) share implementation with build_images.py
+# TODO(j-rivero) share implementation with build_images.py
 def _full_name(registry, name, tag):
     return f"{registry}/{name}:{tag}"
 
@@ -44,8 +44,8 @@ def _run(full_name, extra_cmd, platform=None, dry_run=False):
         subprocess.check_call(cmd)
 
 
-def _print_ros2_help(full_name, platform=None, dry_run=False):
-    cmd = ["ros2", "--help"]
+def _print_gz_help(full_name, platform=None, dry_run=False):
+    cmd = ["gz", "sim", "--help"]
     _run(full_name, cmd, platform, dry_run)
 
 
@@ -57,8 +57,8 @@ def _print_pkg_version(full_name, pkg, platform=None, dry_run=False):
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--registry", default="localhost", type=str)
-    parser.add_argument("--name", default="ros", type=str)
-    parser.add_argument("--rosdistro", required=True, type=str)
+    parser.add_argument("--image-name", default="gazebo", type=str)
+    parser.add_argument("--release", required=True, type=str)
     parser.add_argument("--dry-run", action="store_true")
 
     args = parser.parse_args()
@@ -69,34 +69,25 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    ros_distro = args.rosdistro.lower()
+    gazebo_release = args.release.lower()
     dry_run = args.dry_run
 
     amd64 = "linux/amd64"
-    armhf = "linux/arm/v7"
     arm64 = "linux/arm64/v8"
 
     combos = [
-        ("ros-core", amd64),
-        ("ros-base", amd64),
-        ("desktop", amd64),
-        ("perception", amd64),
-        ("simulation", amd64),
-        ("desktop-full", amd64),
-        ("ros-core", arm64),
-        ("ros-base", arm64),
-        ("desktop", arm64),
-        ("perception", arm64),
-        ("simulation", arm64),
-        ("desktop-full", arm64),
+        ("core", amd64),
+        ("full", amd64),
+        ("core", arm64),
+        ("full", arm64),
     ]
     for image, platform in combos:
-        tag = f"{ros_distro}-{image}"
-        package = f"ros-{ros_distro}-{image}"
-        full_name = _full_name(args.registry, args.name, tag)
+        tag = f"{gazebo_release}-{image}"
+        package = f"gz-{gazebo_release}"
+        full_name = _full_name(args.registry, args.image_name, tag)
         _pull(full_name, dry_run)
         _print_pkg_version(full_name, package, platform, args.dry_run)
-        _print_ros2_help(full_name, platform, dry_run)
+        _print_gz_help(full_name, platform, dry_run)
 
 
 if __name__ == "__main__":
