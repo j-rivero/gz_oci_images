@@ -10,5 +10,7 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy-jazzy:
+  build-and-deploy-jetty:
     uses: ./.github/workflows/build-one-gazebo-release.yaml
+    with:
+      gazebo_release: jetty
