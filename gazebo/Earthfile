@@ -90,8 +90,13 @@ gazebo-core:
 
     ENV GAZEBO_RELEASE ${GAZEBO_RELEASE}
 
-    # Install core Gazebo packages (minimal installation)
-    DO apt+INSTALL --packages=gz-tools2
+    # Install core Gazebo packages (gz-tools)
+    RUN apt-get update && \
+        if [ "$GAZEBO_RELEASE" = "fortress" ]; then \
+          apt-get install -y ign-tools1; \
+        else \
+          apt-get install -y gz-tools2; \
+        fi
 
     CMD ["bash"]
 
@@ -101,18 +106,8 @@ gazebo-core:
 gazebo-full:
     ARG GAZEBO_RELEASE
     FROM --pass-args +gazebo-core
-    
+
     # Install complete Gazebo suite
-    RUN apt-get update && \
-        if [ "$GAZEBO_RELEASE" = "fortress" ]; then \
-            apt-get install -y gz-fortress; \
-        elif [ "$GAZEBO_RELEASE" = "harmonic" ]; then \
-            apt-get install -y gz-harmonic; \
-        elif [ "$GAZEBO_RELEASE" = "ionic" ]; then \
-            apt-get install -y gz-ionic; \
-        elif [ "$GAZEBO_RELEASE" = "jetty" ]; then \
-            apt-get install -y gz-jetty; \
-        fi && \
-        rm -rf /var/lib/apt/lists/*
-    
+    DO apt+INSTALL --packages=gz-${GAZEBO_RELEASE}
+
     SAVE IMAGE localhost/gazebo-intermediate:${GAZEBO_RELEASE}-full
