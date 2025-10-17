@@ -1,4 +1,4 @@
-name: ROS Jazzy Build
+name: Gazebo Jetty Build
 
 on:
   workflow_dispatch:
@@ -12,5 +12,3 @@ permissions:
 jobs:
   build-and-deploy-jazzy:
     uses: ./.github/workflows/build-one-gazebo-release.yaml
-    with:
-      ros_distro: jazzy
