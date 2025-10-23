@@ -93,7 +93,7 @@ gazebo-core:
     # Install core Gazebo packages (gz-tools)
     RUN apt-get update && \
         if [ "$GAZEBO_RELEASE" = "fortress" ]; then \
-          apt-get install -y libsdformat12-dev ign-tools; \
+          apt-get install -y libsdformat12-dev libignition-tools-dev; \
         elif [ "$GAZEBO_RELEASE" = "harmonic" ]; then \
           apt-get install -y libsdformat14-dev python3-sdformat14 gz-tools2; \
         elif [ "$GAZEBO_RELEASE" = "ionic" ]; then \
