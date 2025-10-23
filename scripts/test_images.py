@@ -44,11 +44,22 @@ def _run(full_name, extra_cmd, platform=None, dry_run=False):
         subprocess.check_call(cmd)
 
 
-def _print_gz_help(full_name, platform=None, dry_run=False, gazebo_release=""):
+def _print_gz_help(full_name, platform=None, dry_run=False,
+                   gazebo_release="", image_type=""):
+    cmd = []
+
     if gazebo_release == "fortress":
-        cmd = ["ign", "sim", "--help"]
+        cmd += ["ign"]
     else:
-        cmd = ["gz", "sim", "--help"]
+        cmd += ["gz"]
+
+    if image_type == "core":
+        cmd += ["sdf"]
+    elif image_type == "full":
+        cmd += ["sim"]
+
+    cmd += ["--help"]
+
     _run(full_name, cmd, platform, dry_run)
 
 
@@ -90,7 +101,7 @@ def main():
         full_name = _full_name(args.registry, args.image_name, tag)
         _pull(full_name, dry_run)
         _print_pkg_version(full_name, package, platform, args.dry_run)
-        _print_gz_help(full_name, platform, dry_run, gazebo_release)
+        _print_gz_help(full_name, platform, dry_run, gazebo_release, image)
 
 
 if __name__ == "__main__":
