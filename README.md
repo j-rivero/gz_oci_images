@@ -2,7 +2,6 @@
 
 [Open Container Initiative](https://opencontainers.org/) images for [Gazebo](https://gazebosim.org)!
 
-
 Are you looking for **Docker images**?
 You're in the right spot!
 OCI images are Docker images.
@@ -16,17 +15,18 @@ OCI images are Docker images.
 
 New to containers? Start with [Docker](https://docs.docker.com/get-docker/). It has the most documentation and tutorials.
 
-```
+```bash
 docker run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty gz sim --help
 ```
 
 ## About the images
 
-All images are updated once per week at midnight GMT on Sunday.
-Additionally each Gazebo release's images are updated automatically after a sync.
+All images are updated once per week at midnight GMT on Sunday. All images are based on Ubuntu.
 
-The Gazebo releases provide different variants based on the included libraries.
-All images are based on Ubuntu.
+The Gazebo releases provide different variants based on the included libraries:
+
+* core: gz libraries up to sdformat (including python bindings): gz-cmake. gz-math, gz-tools and gz-utils.
+* full: packages installed are based in the release metapackage (gz-${release})
 
 | Image           | amd64 | arm64 v8 | Full Image Name                                |
 |-----------------|-------|----------|-----------------------------------------------|
