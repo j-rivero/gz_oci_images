@@ -20,11 +20,23 @@ import subprocess
 
 def is_new_version_available(pkg):
     """Assumes apt-get update has already been called."""
-    cmd = ["apt-get", "upgrade", "-s", pkg]
-    output = subprocess.check_output(cmd)
-    if "is already the newest version" in output.decode():
-        return False
-    return True
+    try:
+        subprocess.check_output(f"apt-cache depends {pkg}", shell=True, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError:
+        raise ValueError(f"Package '{pkg}' not found")
+
+    # Not using --recursive since the metapackage depends on at least one fo the gz libs that are updated
+    # all together.
+    cmd = f"apt-cache depends {pkg} | grep 'Depends:' | awk '{{print $2}}' | xargs apt list --upgradable 2>/dev/null"
+    try:
+        output = subprocess.check_output(cmd, shell=True)
+        output_lines = output.decode().strip().split('\n')
+        # Filter out the "Listing... Done" line and empty lines
+        upgradable_lines = [line for line in output_lines if line and not line.startswith('Listing')]
+        return len(upgradable_lines) > 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Command failed with exit code {e.returncode}: {cmd}")
+        raise
 
 
 def parse_arguments():
