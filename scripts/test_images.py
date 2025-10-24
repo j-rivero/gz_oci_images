@@ -47,16 +47,18 @@ def _run(full_name, extra_cmd, platform=None, dry_run=False):
 def _print_gz_help(full_name, platform=None, dry_run=False,
                    gazebo_release="", image_type=""):
     cmd = []
+    gz_subcmd = ["sim"]
 
     if gazebo_release == "fortress":
         cmd += ["ign"]
+        gz_subcmd = ["gazebo"]
     else:
         cmd += ["gz"]
 
     if image_type == "core":
         cmd += ["sdf"]
     elif image_type == "full":
-        cmd += ["sim"]
+        cmd += gz_subcmd
 
     cmd += ["--help"]
 
