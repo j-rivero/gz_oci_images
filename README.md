@@ -16,7 +16,7 @@ OCI images are Docker images.
 New to containers? Start with [Docker](https://docs.docker.com/get-docker/). It has the most documentation and tutorials.
 
 ```bash
-docker run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty gz sim --help
+docker run --rm=true -ti ghcr.io/j-rivero/gazebo:jetty-full gz sim --help
 ```
 
 ## About the images
